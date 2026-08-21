@@ -1,9 +1,9 @@
 ---
 layout: page
-title: 关于 憂い桜
+title: About Snowi
 tags: [about, Jekyll, theme, moon]
-date: 2023-08-03
+date: 2026-08-21
 comments: false
 ---
-    
-关于我
+
+Undergraduate at University of southampton
