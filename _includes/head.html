@@ -51,9 +51,33 @@
     <style type="text/css">body {background-image:var(--site-background-image, url("{{ background }}")); {% unless site.tiled_bg %} background-repeat: no-repeat; background-size: cover; {% endunless %}}</style>
     <script>
       (() => {
-        const imageNumber = Math.floor(Math.random() * 5) + 1;
-        const imageUrl = "{{ site.baseurl }}/assets/img/" + imageNumber + ".jpg";
-        document.documentElement.style.setProperty("--site-background-image", 'url("' + imageUrl + '")');
+        const storageKey = "snowi-background-image";
+
+        function applyBackground(reload = false) {
+          let imageNumber;
+          try {
+            imageNumber = sessionStorage.getItem(storageKey);
+            if (reload || !/^[1-5]$/.test(imageNumber)) {
+              imageNumber = String(Math.floor(Math.random() * 5) + 1);
+              sessionStorage.setItem(storageKey, imageNumber);
+            }
+          } catch {
+            /* Use the CSS fallback when session storage is blocked. */
+            return;
+          }
+
+          const imageUrl = "{{ site.baseurl }}/assets/img/" + imageNumber + ".jpg";
+          document.documentElement.style.setProperty("--site-background-image", 'url("' + imageUrl + '")');
+        }
+
+        const navigation = performance.getEntriesByType("navigation")[0];
+        applyBackground(navigation?.type === "reload");
+
+        window.addEventListener("pageshow", (event) => {
+          if (event.persisted) {
+            applyBackground();
+          }
+        });
       })();
     </script>
     {% endif %}
